@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>miner monitoring</title>
+      <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+      <link rel="stylesheet" type="text/css" href="css/index.css">
+      <link rel="stylesheet" type="text/css" href="css/main.css">
+      <link rel="stylesheet" type="text/css" href="css/spin.css">
+        <style>
+            @font-face {
+                font-family: BYekanFont;
+                src: url('fonts/BYekan.ttf');
+            }
+            * {
+                font-family:BYekanFont;
+            }
+            h1, h2, h3, h4, h5, h6 {
+                font-family: BYekanFont;
+            }
+            th, a, p, input, button, legend, label, blockquote {font-family: BYekanFont;}
+            .btn {font-family: BYekanFont;}
+        </style>
+    </head>
+  <body>
+  <div class="container">
+
+      <div class="text-center">
+          <h2>لیست دستگاه ها </h2>
+      </div>
+      <div class="table-responsive">
+          <table class="table table-striped">
+              <thead>
+              <tr>
+                  <th>Ip</th>
+                  <th>Type</th>
+                  <th>Temp2</th>
+                  <th>Temp1</th>
+                  <th>Fan Speed</th>
+                  <th>Total Th</th>
+                  <th>Up time</th>
+              </tr>
+              </thead>
+              <tbody id="deviceTable">
+              </tbody>
+          </table>
+      </div>
+      <br/>
+      <div id="pagination" style="display: none;">
+          <ul class="pagination">
+              <li class="page-item"><a class="page-link" href="#" id="previous">Previous</a></li>
+              <li class="page-item"><a class="page-link pagination-item" href="#">1</a></li>
+              <li class="page-item active"><a class="page-link pagination-item" href="#">2</a></li>
+              <li class="page-item"><a class="page-link pagination-item" href="#">3</a></li>
+              <li class="page-item"><a class="page-link" href="#" id="nexr">Next</a></li>
+          </ul>
+      </div>
+  </div>
+
+  <!-- The Modal -->
+  <div id="Modal-mv" class="modal-mv">
+      <!-- Modal content -->
+      <div class="modal-content-mv" style="direction: rtl;">
+          <div class="modal-header-mv" id="modalHeader">
+              <!--<span class="close-mv">&times;</span>-->
+              <h2 class="text-center">در حال جست و جو دستگاه ها</h2>
+          </div>
+          <div class="modal-body-mv text-center" id="waitingModal">
+              <p>لطففا صبر کنید</p>
+              <div class="loader"></div>
+          </div>
+          <div class="modal-body-mv" id="notFoundModal" style="display: none;text-align: right;">
+              <p>لطفا ارتباط مودم اینترنت خود را چک کنید.</p>
+              <p>لطفا از روشن بودن دستگاه ماینر مطمئن شوید.</p>
+              <p>لطفا اگر چراغ قرمز دستگاه ماینر روشن است آن را خاموش و سپس دوباره روشن کنید و بعد از 10 دقیقه دوباره نرم افزار باز کنید.</p>
+              <p>در صورتی که هیچکدام از موارد بالا به شما کمک نکرد، با پشتیبانی به شماره تلفن: 09371869568 تماس بگیرید.</p>
+              <div class="text-center">
+                 <button class="btn btn-primary" id="searchBtn">جست و جو دوباره</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+      <script type="text/javascript">
+        window.$ = window.jQuery = require('./js/jquery.js');
+        require("./js/main.js");
+
+      </script>
+  </body>
+</html>

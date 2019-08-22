@@ -1,0 +1,35 @@
+var packetsCode = {
+	packetType: 'packetType',
+	selectChartsType : 'selectChartsType',
+	eewConfigType: 'eewConfigType',
+	runTestType: 'runTestType',
+	stopTestType: 'stopTestType',
+	releaseAlarmType: 'releaseAlarmType',
+	stopAlarmType: 'stopAlarmType',
+	receiveChartDataType: 'receiveChartDataType',
+	chartsDataType: 'chartsDataType',
+    connectionStateType: 'connectionStateType',
+    connectionState: 'connectionState',
+    newSensorPacket: 'newSensorPacket',
+    Router_second: "SEC",
+    Router_minute: "MIN",
+    Router_milisec: "Msc",
+	connected: "connected",
+    disconnected: "disconnected",
+    sensorsInfo: 'sensorsInfoType',
+    antenSignal: 'antenSignal',
+	Router_Battery_Level: "RBL",
+	Sensor_Battery_Level: "SBL",
+	sensorsInfoType: "sensorsInfoType",
+	onRoof: "onRoof",
+    onGround: "onGround",
+    fft_chart_second: "fft_chart_second",
+    chart1FFT: "chart1FFT",
+    chart2FFT: "chart2FFT",
+    chart3FFT: "chart3FFT",
+    colibrateType: "colibrateType",
+    earthquakeType: "earthquakeType"
+} 
+
+
+module.exports = packetsCode;
