@@ -16,7 +16,7 @@ const { JSDOM } = jsdom;
 var arrayMiners = [];
 // arrayMiners.push({ip: '192.168.100.6'});
 var minerStatus = [];
-
+var firstTimeSearching = false;
 
 
   let sp;
@@ -93,10 +93,17 @@ function updateMinersState() {
     if(minerStatus.length >0) {
         sendMinersInfo(minerStatus)
         minerStatus = [];
+    } else {
+        if(firstTimeSearching) {
+            if(win.webContents !== null) {
+                win.webContents.send('noMiner');
+            }
+        }
     }
     for(var i=0; i< arrayMiners.length; i++) {
         readMinerStatus(arrayMiners[i].ip, '80', 'root', 'root');
     }
+    firstTimeSearching = true;
 }
 
 function readMinerStatus(host,port, username, password) {
@@ -172,12 +179,46 @@ function sendMinersInfo() {
     var minersInfo = {"minersInfo": minerStatus};
     var message = JSON.stringify(minersInfo);
     console.log("sendMinersInfo");console.log(message);
+    if(win.webContents !== null) {
+        win.webContents.send('minersInfo', message);
+    }
     axios.post('https://hashbazaar.com/api/remote', minersInfo).then((response) => {
         console.log("sendMinersInfo response"); console.log(response.data);
-}).catch( (error) => {
+  }).catch( (error) => {
         console.log("error sendMinersInfo");console.log(error);
-})
+  })
 };
+
+setInterval(function() {
+    // example usage:
+    checkInternet(function(isConnected) {
+        if (isConnected) {
+            // connected to the internet
+            console.log("connected") ;
+            if(win.webContents !== null) {
+                win.webContents.send('connected');
+            }
+            find().then(devices => {
+                console.log(devices) ;
+                if(devices.length === 0) {
+                    if(win.webContents !== null) {
+                        win.webContents.send('noMiner');
+                    }
+                }
+            for(var i=0; i< devices.length; i++) {
+                arrayMiners.push({ip: devices[i].ip});
+            }
+
+        });
+        } else {
+            // not connected to the internet
+            console.log("not connected") ;
+            if(win.webContents !== null) {
+                win.webContents.send('disconnected');
+            }
+        }
+    });
+},30000);
 
 
 
