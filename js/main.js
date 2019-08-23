@@ -1,4 +1,5 @@
 const electron = require("electron");
+const ipc = electron.ipcRenderer;
 // const notifier = require('node-notifier');
 var sensorCounter = 0;
 var connected = true;
@@ -58,6 +59,15 @@ const searchBtn = document.getElementById('searchBtn');
 
 searchBtn.addEventListener('click', function () {
     showSearchingModal();
+});
+
+// register id btn
+const btnRegisterCode = document.getElementById('btnRegisterCode');
+
+btnRegisterCode.addEventListener('click', function () {
+    $('#registerIdForm').hide();
+    $('#btnLoading').show();
+    // ipc.send('code', eewConfig);
 });
 
 // connected
