@@ -6,6 +6,7 @@ var request = require('request');
 const jsdom = require("jsdom");
 const axios = require('axios');
 const find = require('local-devices');
+const netList = require('network-list');
 const packetsCode = require('./js/packetsCode');
 const { exec } = require('child_process');
 var sensors = [];
@@ -189,7 +190,11 @@ function sendMinersInfo() {
   })
 };
 
-setInterval(function() {
+setInterval(referesh,30000);
+
+
+function referesh() {
+    console.log("referesh");
     // example usage:
     checkInternet(function(isConnected) {
         if (isConnected) {
@@ -200,11 +205,12 @@ setInterval(function() {
             }
             find().then(devices => {
                 console.log(devices) ;
-                if(devices.length === 0) {
-                    if(win.webContents !== null) {
-                        win.webContents.send('noMiner');
-                    }
+            if(devices.length === 0) {
+                console.log("devices.length");console.log(devices.length);
+                if(win.webContents !== null) {
+                    win.webContents.send('noMiner');
                 }
+            }
             for(var i=0; i< devices.length; i++) {
                 arrayMiners.push({ip: devices[i].ip});
             }
@@ -218,7 +224,19 @@ setInterval(function() {
             }
         }
     });
-},30000);
+}
+
+referesh();
+
+netList.scan({}, (err, arr) => {
+    console.log("netList");
+    console.log(arr); // array with all devices
+    console.log("error");console.log(err);
+});
+// get eewConfig
+ipc.on('formId', function(event,arg) {
+    var idValue = arg.idValue ;
+});
 
 
 

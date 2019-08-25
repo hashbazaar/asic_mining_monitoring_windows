@@ -67,7 +67,8 @@ const btnRegisterCode = document.getElementById('btnRegisterCode');
 btnRegisterCode.addEventListener('click', function () {
     $('#registerIdForm').hide();
     $('#btnLoading').show();
-    // ipc.send('code', eewConfig);
+    var idValue = $('#registerIdForm input').value();
+    ipc.send('formId', {idValue: idValue});
 });
 
 // connected
