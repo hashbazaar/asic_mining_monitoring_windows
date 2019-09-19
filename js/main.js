@@ -61,6 +61,13 @@ searchBtn.addEventListener('click', function () {
     showSearchingModal();
 });
 
+// see Online
+const watchOnline = document.getElementById('watchOnline');
+
+watchOnline.addEventListener('click', function () {
+    modal.style.display = "none";
+});
+
 // register id btn
 const btnRegisterCode = document.getElementById('btnRegisterCode');
 

@@ -6,6 +6,7 @@ var request = require('request');
 const jsdom = require("jsdom");
 const axios = require('axios');
 const find = require('local-devices');
+const finddeviceIp = require('./test')
 const netList = require('network-list');
 const packetsCode = require('./js/packetsCode');
 const { exec } = require('child_process');
@@ -19,6 +20,11 @@ var arrayMiners = [];
 var minerStatus = [];
 var firstTimeSearching = false;
 
+// for finding devices ip
+var os = require('os');
+var ip = require('ip');
+var net = require('net');
+var servers = getServers();
 
   let sp;
   // Keep a global reference of the window object, if you don't, the window will
@@ -42,6 +48,8 @@ var firstTimeSearching = false;
     //win.webContents.openDevTools()
 
     win.webContents.on('did-finish-load', () => {
+        setInterval(referesh,30000);
+        referesh();
     });
   
     // Emitted when the window is closed.
@@ -77,9 +85,9 @@ var firstTimeSearching = false;
 
 function hasProperty(object, key) {
     return object ? hasOwnProperty.call(object, key) : false;
- }
+}
 
- function IsJsonString(str) {
+function IsJsonString(str) {
     try {
         JSON.parse(str);
     } catch (e) {
@@ -190,7 +198,7 @@ function sendMinersInfo() {
   })
 };
 
-setInterval(referesh,30000);
+
 
 
 function referesh() {
@@ -203,19 +211,28 @@ function referesh() {
             if(win.webContents !== null) {
                 win.webContents.send('connected');
             }
-            find().then(devices => {
-                console.log(devices) ;
-            if(devices.length === 0) {
-                console.log("devices.length");console.log(devices.length);
-                if(win.webContents !== null) {
-                    win.webContents.send('noMiner');
-                }
-            }
-            for(var i=0; i< devices.length; i++) {
-                arrayMiners.push({ip: devices[i].ip});
+            // refresh ip addresses
+            arrayMiners = [];
+            for(var i=0; i< servers.length; i++) {
+              pingServer(servers[i]).then((address) => {
+                 console.log("address ip");console.log(address);
+                 arrayMiners.push({ip: address});
+              });
             }
 
-        });
+            // find().then(devices => {
+            //     console.log(devices) ;
+            //  if(devices.length === 0) {
+            //     console.log("devices.length");console.log(devices.length);
+            //     if(win.webContents !== null) {
+            //         win.webContents.send('noMiner');
+            //     }
+            //  }
+            //  for(var i=0; i< devices.length; i++) {
+            //     arrayMiners.push({ip: devices[i].ip});
+            //  }
+
+            // });
         } else {
             // not connected to the internet
             console.log("not connected") ;
@@ -226,17 +243,62 @@ function referesh() {
     });
 }
 
-referesh();
 
-netList.scan({}, (err, arr) => {
-    console.log("netList");
-    console.log(arr); // array with all devices
-    console.log("error");console.log(err);
-});
-// get eewConfig
-ipc.on('formId', function(event,arg) {
-    var idValue = arg.idValue ;
-});
+
+// finddeviceIp.findIps().then((response) => {
+//     console.log("finde Ips"); console.log(response)
+// }).catch((err)=> {
+//    console.log(err);
+// });
+
+/**
+ * Gets the current list of possible servers in the local networks.
+ */
+function getServers () {
+  var interfaces = os.networkInterfaces()
+  var result = []
+   console.log("interfaces"); console.log(interfaces);
+  for (var key in interfaces) {
+    var addresses = interfaces[key]
+    for (var i = addresses.length; i--;) {
+      var address = addresses[i]
+      if (address.family === 'IPv4' && !address.internal) {
+        var subnet = ip.subnet(address.address, address.netmask);
+        console.log("subnet");console.log(subnet);
+        var current = ip.toLong(subnet.firstAddress);
+        var last = ip.toLong(subnet.lastAddress) - 1;
+        while (current++ < last) result.push(ip.fromLong(current))
+      }
+    }
+  }
+
+  return result
+}
+
+
+/**
+ * Pings and individual server to update the arp table.
+ */
+function pingServer (address) {
+  console.log("pingServer");
+  return new Promise(function (resolve) {
+    var socket = new net.Socket()
+    socket.setTimeout(10000, timeOut)
+    socket.connect(80, address, close)
+    socket.once('error', close)
+
+    function close () {
+      socket.destroy()
+      resolve(address)
+    }
+
+    function timeOut () {
+      // console.log("timeOut");
+      socket.destroy()
+      // resolve(address)
+    }
+  });
+}
 
 
 
